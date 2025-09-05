@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VR4E35ZH38"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-VR4E35ZH38');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offer Details - SharesHub</title>
+    <link rel="stylesheet" href="./OfferDetailsPage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+                
+            </button>
+            <img src="./SharesHub_Logo.jfif" alt="SharesHub Logo" class="logo"
+                onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23ff8f4d\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'white\' font-size=\'20\' font-weight=\'bold\'%3ESH%3C/text%3E%3C/svg%3E';">
+            <h1 class="header-title">Offer Details</h1>
+
+            <!-- Share Button -->
+            <div class="share-dropdown">
+                <button class="share-btn" onclick="toggleShareMenu()">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="share-overlay" id="shareOverlay" onclick="closeShareMenu()"></div>
+        <div class="share-menu" id="shareMenu">
+            <button class="share-option" onclick="shareViaWebAPI()">
+                <i class="fas fa-share-nodes"></i>
+                <span class="share-option-text">Share via Device</span>
+            </button>
+            <button class="share-option" onclick="copyOfferLink()">
+                <i class="fas fa-link"></i>
+                <span class="share-option-text">Copy Link</span>
+            </button>
+            <button class="share-option" onclick="shareViaWhatsApp()">
+                <i class="fab fa-whatsapp"></i>
+                <span class="share-option-text">WhatsApp</span>
+            </button>
+            <button class="share-option" onclick="shareViaFacebook()">
+                <i class="fab fa-facebook"></i>
+                <span class="share-option-text">Facebook</span>
+            </button>
+            <button class="share-option" onclick="shareViaTwitter()">
+                <i class="fab fa-twitter"></i>
+                <span class="share-option-text">Twitter</span>
+            </button>
+            <button class="share-option" onclick="shareViaEmail()">
+                <i class="fas fa-envelope"></i>
+                <span class="share-option-text">Email</span>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p style="color: var(--dark);">Loading offer details...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Bottom -->
+    <div class="fixed-bottom" id="fixedBottom">
+        <div class="bottom-content">
+            <div class="total-summary">
+                <div class="total-items" id="totalItems">0 items selected</div>
+                <div class="total-price" id="totalPrice">EGP 0.00</div>
+            </div>
+            <button class="join-btn" id="joinBtn" onclick="joinOffer()" disabled>
+                Join Group
+            </button>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+                <h2 class="modal-title">Complete Your Order</h2>
+                <p class="modal-subtitle">Please fill in your delivery information to join this group deal</p>
+            </div>
+
+            <div class="modal-body">
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h3 class="order-summary-title">📋 Order Summary</h3>
+                    <div id="orderSummaryItems"></div>
+                </div>
+
+                <!-- Order Form -->
+                <form id="orderForm">
+                    <!-- Shipping Address Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            🏠 Shipping Address
+                        </h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="firstName" class="form-label required">First Name</label>
+                                <input type="text" id="firstName" name="firstName" class="form-input" required>
+                                <div class="error-message" id="firstName-error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName" class="form-label required">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" class="form-input" required>
+                                <div class="error-message" id="lastName-error"></div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="email" class="form-label required">Email Address</label>
+                                <input type="email" id="email" name="email" class="form-input" required>
+                                <div class="error-message" id="email-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phoneNumber" class="form-label required">Phone Number</label>
+                                <div class="phone-input-group">
+                                    <select id="phoneCountryCode" name="phoneCountryCode" class="country-code-select"
+                                        required>
+                                        <option value="+20">🇪🇬 +20</option>
+                                    </select>
+                                    <input type="tel" id="phoneNumber" name="phoneNumber"
+                                        class="form-input phone-number-input" placeholder="1234567890" required>
+                                </div>
+                                <div class="error-message" id="phoneNumber-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="country" class="form-label required">Country</label>
+                                <select id="country" name="country" class="form-input form-select" required>
+                                    <option value="">Select Country</option>
+                                    <option value="Egypt" selected>Egypt</option>
+                                </select>
+                                <div class="error-message" id="country-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="state" class="form-label required">City</label>
+                                <select id="state" name="state" class="form-input form-select" required>
+                                    <option value="">Select Governorate</option>
+                                    <option value="Cairo">Cairo</option>
+                                    <option value="Giza">Giza</option>
+                                    <option value="Alexandria">Alexandria</option>
+                                </select>
+                                <div class="error-message" id="state-error"></div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="street" class="form-label required">Address</label>
+                                <input type="text" id="street" name="street" class="form-input" required>
+                                <div class="error-message" id="street-error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="building" class="form-label required">Building Number</label>
+                                <input type="text" id="building" name="building" class="form-input" required>
+                                <div class="error-message" id="building-error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="apartment" class="form-label required">Apartment Number</label>
+                                <input type="text" id="apartment" name="apartment" class="form-input" required>
+                                <div class="error-message" id="apartment-error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="floor" class="form-label required">Floor</label>
+                                <input type="text" id="floor" name="floor" class="form-input" required>
+                                <div class="error-message" id="floor-error"></div>
+                            </div>
+                            <!-- <div class="form-group">
+                                <label for="zipCode" class="form-label">Zip Code</label>
+                                <input type="text" id="zipCode" name="zipCode" class="form-input">
+                                <div class="error-message" id="zipCode-error"></div>
+                            </div> -->
+
+                            <div class="form-group full-width">
+                                <label for="couponCode" class="form-label required">Coupon Code</label>
+                                <div class="coupon-input-group">
+                                    <input type="text" id="couponCode" name="couponCode" class="form-input coupon-input" required>
+                                    <button type="button" class="apply-coupon-btn" id="applyCouponBtn" onclick="applyCoupon()">
+                                        Apply
+                                    </button>
+                                </div>
+                                <div class="error-message" id="couponCode-error"></div>
+                                <div class="success-message" id="couponCode-success"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeOrderModal()">Cancel</button>
+                <button type="button" class="btn-primary" id="submitOrderBtn" onclick="submitOrder()">
+                    Place Order
+                </button>
+            </div>
+
+            <!-- Loading overlay -->
+            <div class="modal-loading" id="modalLoading" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Message Modal -->
+    <div class="message-overlay" id="messageModal">
+        <div class="message-box">
+            <div class="message-icon" id="messageIcon">
+                <span id="messageIconText">✓</span>
+            </div>
+            <h2 class="message-title" id="messageTitle">Success!</h2>
+            <div class="message-content" id="messageContent"></div>
+            <button class="message-close-btn" onclick="closeMessageModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Survey Modal -->
+    <div class="survey-overlay" id="surveyModal">
+        <div class="survey-modal">
+            <div class="survey-header">
+                <button class="survey-close" onclick="closeSurveyModal()">&times;</button>
+                <h2 class="survey-title">📋 Quick Feedback Survey</h2>
+                <p class="survey-subtitle">Help us improve your experience! This will only take 2 minutes.</p>
+            </div>
+
+            <div class="survey-body" id="surveyBody">
+                <!-- Survey questions will be dynamically generated here -->
+            </div>
+
+            <div class="survey-actions">
+                <div class="survey-progress">
+                    <span id="surveyProgressText">0% Complete</span>
+                    <div class="survey-progress-bar">
+                        <div class="survey-progress-fill" id="surveyProgressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="survey-skip-btn" onclick="skipSurvey()">Skip Survey</button>
+                    <button class="survey-submit-btn" id="surveySubmitBtn" onclick="submitSurvey()">Submit
+                        Feedback</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="./OfferDetailsPage.js"></script>
+
+</body>
+
+</html>
