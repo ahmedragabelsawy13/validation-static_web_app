@@ -8,8 +8,8 @@ let slideInterval;
 let isAutoPlaying = true;
 const autoPlayDelay = 4000; // 4 seconds
 
-// const API_URL = 'https://shareshubapi-gmhbgtcqhef5dfcj.canadacentral-01.azurewebsites.net/api';
-const API_URL = 'https://localhost:7255/api';
+const API_URL = 'https://shareshubapi-gmhbgtcqhef5dfcj.canadacentral-01.azurewebsites.net/api';
+// const API_URL = 'https://localhost:7255/api';
 
 // Mock banner data (replace with actual API data)
 const bannerData = [

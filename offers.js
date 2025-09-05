@@ -4,8 +4,8 @@ let subcategoriesData = null;
 let selectedSubcategoryId = null;
 let dealsData = null;
 
-// const API_URL = 'https://shareshubapi-gmhbgtcqhef5dfcj.canadacentral-01.azurewebsites.net/api';
-const API_URL = 'https://localhost:7255/api';
+const API_URL = 'https://shareshubapi-gmhbgtcqhef5dfcj.canadacentral-01.azurewebsites.net/api';
+// const API_URL = 'https://localhost:7255/api';
 
 // Mock data matching your API structure
 const mockDeals = [

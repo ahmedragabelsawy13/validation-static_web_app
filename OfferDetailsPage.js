@@ -5,8 +5,8 @@ let selectedQuantities = {};
 // Coupon State
 let appliedCoupon = null;
 
-// const API_URL = 'https://shareshubapi-gmhbgtcqhef5dfcj.canadacentral-01.azurewebsites.net/api';
-const API_URL = 'https://localhost:7255/api';
+const API_URL = 'https://shareshubapi-gmhbgtcqhef5dfcj.canadacentral-01.azurewebsites.net/api';
+// const API_URL = 'https://localhost:7255/api';
 
 // Utility Functions
 function formatPrice(price) {
