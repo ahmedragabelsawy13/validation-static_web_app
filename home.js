@@ -17,16 +17,16 @@ const bannerData = [
         id: 1,
         title: "",
         description: "Up to 58% off on all categories",
-        image: "https://staticwebappimages.blob.core.windows.net/shareshubimages/Summer Sale Promotion Banner.png",
+        image: "https://staticwebappimages.blob.core.windows.net/shareshubimages/new_banner_1.jpg",
         link: "#"
     },
-    // {
-    //     id: 2,
-    //     title: "Tech Deals",
-    //     description: "Latest gadgets at unbeatable prices",
-    //     image: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&h=400&fit=crop",
-    //     link: "#"
-    // },
+    {
+        id: 2,
+        title: "",
+        description: "Our Brands",
+        image: "https://staticwebappimages.blob.core.windows.net/shareshubimages/new_banner_2.jpg",
+        link: "#"
+    },
     // {
     //     id: 3,
     //     title: "Fashion Week",
