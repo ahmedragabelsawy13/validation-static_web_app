@@ -1647,9 +1647,68 @@ body {
     font-weight: bold;
 }
 
+.countdown-section.motivational {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    animation: pulse 3s ease-in-out infinite;
+}
+
+.motivational-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.motivational-subtext {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+/* Enhanced countdown motivation text for when group has started */
+.countdown-motivation {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    opacity: 0.9;
+    font-style: italic;
+    font-weight: 500;
+}
+
+/* Subtle pulse animation for motivational section */
 @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    50% { 
+        transform: scale(1.01);
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .countdown-section.motivational {
+        padding: 20px 16px;
+    }
+    
+    .motivational-text {
+        font-size: 1rem;
+    }
+    
+    .motivational-subtext {
+        font-size: 0.85rem;
+    }
+    
+    .countdown-motivation {
+        font-size: 0.8rem;
+    }
 }
 
 /* Content Description Toggle Styles */

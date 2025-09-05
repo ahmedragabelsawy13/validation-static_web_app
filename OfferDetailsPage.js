@@ -5,8 +5,8 @@ let selectedQuantities = {};
 // Coupon State
 let appliedCoupon = null;
 
-const API_URL = 'https://shareshubapi-gmhbgtcqhef5dfcj.canadacentral-01.azurewebsites.net/api';
-// const API_URL = 'https://localhost:7255/api';
+// const API_URL = 'https://shareshubapi-gmhbgtcqhef5dfcj.canadacentral-01.azurewebsites.net/api';
+const API_URL = 'https://localhost:7255/api';
 
 // Utility Functions
 function formatPrice(price) {
@@ -587,10 +587,15 @@ function updateOrderSummary(selectedItems) {
         <div class="summary-note">
             <strong>Note:</strong> The remaining amount shown is an estimate based on the current applied price tier${appliedCoupon ? ' and coupon discount' : ''} and may change until the offer is considered completed.
         </div>
+    `;
+
+    if(offerData.data.offerType === 2){
+        summaryHTML += `
         <div class="summary-note">
             <strong>Note:</strong> The shipping cost will range between 50 and 60 EGP.
         </div>
-    `;
+        `;
+    }
 
     summaryContainer.innerHTML = summaryHTML;
 }
@@ -1244,7 +1249,7 @@ document.addEventListener('keydown', function (event) {
         } else if (messageModal.classList.contains('active')) {
             closeMessageModal();
         } else if (surveyModal && surveyModal.classList.contains('active')) {
-            closeSurveyModal();
+            closeSurveyModalWithDataRefresh();
         } else if (shareMenuOpen) {
             closeShareMenu();
         }
@@ -1297,9 +1302,16 @@ function createContentCountdown(expirationDate, contentId) {
         const container = document.getElementById(`countdown-${contentId}`);
         if (!container) return false;
 
+        // Get the content data to check number of applicants
+        const content = offerData.data.offerContents.find(c => c.id === contentId);
+        if (!content) return false;
+
         const now = new Date().getTime();
         const expiry = new Date(expirationDate).getTime();
         const distance = expiry - now;
+
+        // Check if at least one customer has joined
+        const hasCustomers = content.numberOfApplicants > 0;
 
         if (distance < 0) {
             // Expired
@@ -1312,6 +1324,20 @@ function createContentCountdown(expirationDate, contentId) {
             return false;
         }
 
+        if (!hasCustomers) {
+            // No customers yet - show motivational message instead of countdown
+            container.innerHTML = `
+                <div class="countdown-section motivational">
+                    <div class="countdown-label">🚀 Be the First to Start This Group!</div>
+                    <div class="motivational-text">
+                        Join now and start an amazing group deal! 
+                    </div>
+                </div>
+            `;
+            return true; // Continue checking in case someone joins
+        }
+
+        // At least one customer has joined - show countdown
         // Calculate time units
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1335,11 +1361,13 @@ function createContentCountdown(expirationDate, contentId) {
         }
 
         const label = isUrgent ? '⚠️ ENDING SOON!' : '⏰ Time Remaining';
+        const motivationalText = `${content.numberOfApplicants} people joined! The more, the better the price!`;
 
         container.innerHTML = `
             <div class="countdown-section ${urgencyClass}">
                 <div class="countdown-label">${label}</div>
                 <div class="countdown-display">${timeDisplay}</div>
+                <div class="countdown-motivation">${motivationalText}</div>
             </div>
         `;
 
@@ -1362,7 +1390,6 @@ function createContentCountdown(expirationDate, contentId) {
         }, 1000);
     }
 }
-
 // Initialize countdown for all content items
 function initializeContentCountdowns() {
     if (!offerData) return;
@@ -1774,8 +1801,13 @@ async function submitSurvey() {
         });
 
         if (response.ok) {
+            // Show brief success message before closing
             showToast('Thank you for your feedback!');
-            closeSurveyModal();
+            
+            // Close modal after a short delay to let user see the success message
+            setTimeout(() => {
+                closeSurveyModalWithDataRefresh(); // This will trigger the page refresh
+            }, 1500);
         } else {
             const errorResult = await response.json();
             throw new Error(errorResult.message || 'Failed to submit survey');
@@ -1783,13 +1815,17 @@ async function submitSurvey() {
 
     } catch (error) {
         console.error('Survey submission error:', error);
+        
+        // Show error message briefly, then close anyway
         showToast('Failed to submit survey. Thank you for trying!');
-        closeSurveyModal(); // Close anyway to not block user
+        
+        setTimeout(() => {
+            closeSurveyModalWithDataRefresh(); // This will trigger the page refresh even on error
+        }, 2000);
+        
     } finally {
-        // Restore button state
-        const submitBtn = document.getElementById('surveySubmitBtn');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Feedback';
+        // Note: We don't restore button state here since the page will refresh
+        // This prevents any UI flicker before the refresh
     }
 }
 // Optional: Sequential Question Display Functions
@@ -1954,8 +1990,14 @@ function closeSurveyModal() {
     const surveyModal = document.getElementById('surveyModal');
     surveyModal.classList.remove('active');
     document.body.style.overflow = '';
+    
     // Reset survey data
     surveyAnswers = {};
+    
+    // Add a small delay before refresh for better UX
+    setTimeout(() => {
+        window.location.reload();
+    }, 100);
 }
 
 function generateSurveyQuestions() {
@@ -2049,8 +2091,7 @@ function updateSurveyProgress() {
 }
 
 function skipSurvey() {
-    closeSurveyModal();
-    showToast('Survey skipped. Thank you!');
+    closeSurveyModalWithDataRefresh();
 }
 
 function selectSingleChoice(questionId, optionId) {
@@ -2296,4 +2337,58 @@ function initializeCouponEvents() {
             clearCouponMessages();
         });
     }
+}
+
+async function refreshOfferData() {
+    try {
+        const offerId = getOfferIdFromURL();
+        const newOfferData = await fetchOfferDetails(offerId);
+        
+        // Update global offer data
+        offerData = newOfferData;
+        
+        // Re-render the content
+        const contentElement = document.getElementById('content');
+        contentElement.innerHTML = renderOfferDetails(offerData);
+        
+        // Reset selected quantities
+        Object.keys(selectedQuantities).forEach(key => {
+            selectedQuantities[key] = 0;
+        });
+        
+        // Re-initialize everything
+        updateUI();
+        updateTotalSummary();
+        
+        setTimeout(() => {
+            initializeContentCountdowns();
+            setDescriptionHTML();
+            setTermsAndConditionHTML();
+            initializeDescriptionStates();
+            initializeDropdownEvents();
+            initializeCouponEvents();
+            initSliderEvents();
+            startAutoPlay();
+        }, 100);
+        
+        return true;
+    } catch (error) {
+        console.error('Failed to refresh offer data:', error);
+        // Fallback to full page reload
+        window.location.reload();
+        return false;
+    }
+}
+
+// Optional: Use data refresh instead of page reload for better performance
+function closeSurveyModalWithDataRefresh() {
+    const surveyModal = document.getElementById('surveyModal');
+    surveyModal.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    // Reset survey data
+    surveyAnswers = {};
+    
+    // Refresh data instead of full page reload
+    refreshOfferData();
 }
