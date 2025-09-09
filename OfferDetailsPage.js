@@ -1313,16 +1313,16 @@ function createContentCountdown(expirationDate, contentId) {
         // Check if at least one customer has joined
         const hasCustomers = content.numberOfApplicants > 0;
 
-        if (distance < 0) {
-            // Expired
-            container.innerHTML = `
-                <div class="countdown-section expired">
-                    <div class="countdown-label">⏰ Offer Status</div>
-                    <div class="countdown-expired-text">This offer has expired</div>
-                </div>
-            `;
-            return false;
-        }
+        // if (distance < 0) {
+        //     // Expired
+        //     container.innerHTML = `
+        //         <div class="countdown-section expired">
+        //             <div class="countdown-label">⏰ Offer Status</div>
+        //             <div class="countdown-expired-text">This offer has expired</div>
+        //         </div>
+        //     `;
+        //     return false;
+        // }
 
         if (!hasCustomers) {
             // No customers yet - show motivational message instead of countdown
