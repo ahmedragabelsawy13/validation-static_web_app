@@ -1330,7 +1330,7 @@ function createContentCountdown(expirationDate, contentId) {
                 <div class="countdown-section motivational">
                     <div class="countdown-label">🚀 Be the First to Start This Group!</div>
                     <div class="motivational-text">
-                        Join now and start an amazing group deal! 
+                        Join now and start an amazing group deal!!!!! 
                     </div>
                 </div>
             `;
